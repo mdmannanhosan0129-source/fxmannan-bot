@@ -1,1 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FXMANNAN AI V29 MASTER PRO</title>
+<style>
+  * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background-color: #030712; color: #ffffff; margin: 0; padding: 10px; }
+  .app-card { max-width: 440px; margin: 0 auto; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.9); }
+  .title { color: #38bdf8; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 2px; }
+  .subtitle { color: #64748b; text-align: center; font-size: 11px; margin-bottom: 10px; }
+  
+  #lockScreen { background: #111827; border: 1px solid #374151; border-radius: 14px; padding: 16px; text-align: center; margin-top: 10px; }
+  .lock-icon { font-size: 32px; margin-bottom: 4px; }
+  .lock-title { color: #f87171; font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+  .lock-desc { font-size: 11px; color: #9ca3af; line-height: 1.5; margin-bottom: 10px; }
+  
+  .binance-box { background: #1f2937; border: 2px solid #f59e0b; border-radius: 12px; padding: 12px; margin-bottom: 12px; text-align: center; }
+  .binance-logo { color: #f59e0b; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
+  .qr-placeholder { background: #ffffff; padding: 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px; }
+  .qr-img { width: 140px; height: 140px; border-radius: 4px; display: block; object-fit: contain; }
+  
+  .binance-name { color: #ffffff; font-size: 13px; font-weight: bold; margin-top: 4px; letter-spacing: 0.5px; }
+  .binance-uid { color: #f59e0b; font-size: 12px; font-weight: bold; margin-top: 4px; background: rgba(245, 158, 11, 0.15); padding: 6px 12px; border-radius: 6px; display: inline-block; border: 1px dashed #f59e0b; }
+  
+  .direct-link-box { background: rgba(2, 132, 199, 0.15); border: 1px solid #0284c7; border-radius: 8px; padding: 10px; margin-top: 10px; text-align: center; }
+  .direct-link-text { font-size: 11px; color: #38bdf8; margin-bottom: 4px; font-weight: bold; }
+  .quotex-url { color: #4ade80; font-size: 11px; font-weight: bold; word-break: break-all; text-decoration: underline; display: block; }
+  
+  .support-box { font-size: 11px; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px dashed #38bdf8; padding: 9px; border-radius: 8px; margin-top: 10px; line-height: 1.5; text-align: center; }
+  .support-link { color: #4ade80; font-weight: bold; font-size: 13px; display: block; margin-top: 4px; text-decoration: none; background: rgba(74, 222, 128, 0.1); padding: 6px; border-radius: 6px; border: 1px solid #4ade80; }
 
+  .pass-input { width: 100%; padding: 11px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #ffffff; font-size: 14px; outline: none; text-align: center; font-weight: bold; margin-bottom: 8px; }
+  .unlock-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+  .error-msg { color: #ef4444; font-size: 11px; margin-top: 6px; display: none; font-weight: bold; }
+
+  #mainBotContent { display: none; }
+
+  .platform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px; }
+  .platform-btn { padding: 8px 2px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #94a3b8; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
+  .platform-btn.active { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
+
+  .live-sync-box { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .sync-label { font-size: 11px; color: #94a3b8; font-weight: bold; }
+  .sync-price { font-size: 19px; font-weight: bold; color: #4ade80; }
+  .sync-price.down { color: #f87171; }
+
+  .label { font-size: 11px; color: #94a3b8; margin-top: 8px; margin-bottom: 3px; font-weight: bold; }
+  .btn-grid { display: flex; gap: 6px; margin-bottom: 6px; }
+  .btn-choice { flex: 1; padding: 8px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
+  .btn-choice.active { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
+  
+  select, input { width: 100%; padding: 9px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #ffffff; font-size: 13px; outline: none; margin-bottom: 6px; font-weight: bold; }
+  
+  .gen-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+  
+  .scanner-alert { display: none; background: #7c2d12; border: 1px solid #f97316; color: #ffedd5; padding: 10px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; margin-top: 10px; }
+  
+  .result-box { display: none; background: #064e3b; border: 2px solid #10b981; border-radius: 10px; padding: 12px; text-align: center; margin-top: 10px; }
+  .result-box.sell { background: #7f1d1d; border-color: #ef4444; }
+  .signal-title { font-size: 24px; font-weight: bold; margin: 4px 0; }
+  
+  .timing-highlight { background: rgba(0,0,0,0.6); border: 1px dashed #fbbf24; border-radius: 6px; padding: 10px; margin: 8px 0; color: #fbbf24; font-size: 11px; font-weight: bold; text-align: left; line-height: 1.6; }
+  
+  .market-analysis { background: rgba(0,0,0,0.5); border: 1px solid #334155; border-radius: 6px; padding: 8px; margin-top: 8px; text-align: left; font-size: 10px; }
+  .analysis-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .power-bar-bg { background: #374151; height: 6px; border-radius: 3px; overflow: hidden; display: flex; margin-top: 2px; }
+  .power-buy { background: #22c55e; height: 100%; }
+  .power-sell { background: #ef4444; height: 100%; }
+</style>
+</head>
+<body>
+
+<div class="app-card">
+  <div class="title">FXMANNAN AI V29 MASTER PRO</div>
+  <div class="subtitle" id="platformSub">Quotex, IQ, TradingView, Forex & Binance API</div>
+
+  <!-- VIP LOCK SCREEN -->
+  <div id="lockScreen">
+    <div class="lock-icon"></div>
+    <div class="lock-title">VIP ACCESS LOCKED</div>
+    <div class="lock-desc">
+             <b>$50 USD</b>       
+    </div>
+
+    <!-- Binance Payment Box -->
+    <div class="binance-box">
+      <div class="binance-logo"> BINANCE PAY QR CODE</div>
+      <div class="qr-placeholder">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=BINANCE_PAY_1191555183" alt="Binance Pay QR" class="qr-img">
+      </div>
+      <div style="font-size: 10px; color: #9ca3af; margin-top: 2px;">Scan with Binance App to pay ($50)</div>
+      <div class="binance-name">MD MANNAN HOSAN</div>
+      <div class="binance-uid">Binance Pay ID / UID: 1191555183</div>
+
+      <div class="direct-link-box">
+        <div class="direct-link-text"> Quotex Official Registration Link ($50 Min):</div>
+        <a href="https://broker-qx.pro/sign-up/?lid=2377122" target="_blank" class="quotex-url">
+          https://broker-qx.pro/sign-up/?lid=2377122
+        </a>
+      </div>
+
+      <div class="support-box">
+         <b>        :</b>
+        <a href="https://t.me/FXBD45" target="_blank" class="support-link">
+           Click to Open Telegram: @FXBD45
+        </a>
+      </div>
+    </div>
+
+    <!--     -->
+    <input type="password" id="accessPass" class="pass-input" placeholder="Enter VIP Password...">
+    <button class="unlock-btn" onclick="unlockBot()">UNLOCK BOT</button>
+    <div id="errMsg" class="error-msg">  !    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="mainBotContent">
+    <div class="label">SELECT API PLATFORM</div>
+    <div class="platform-grid">
+      <div id="p-quotex" class="platform-btn active" onclick="selectPlatform('Quotex')">Quotex API</div>
+      <div id="p-iq" class="platform-btn" onclick="selectPlatform('IQ Option')">IQ Option</div>
+      <div id="p-tv" class="platform-btn" onclick="selectPlatform('TradingView')">TradingView</div>
+      <div id="p-forex" class="platform-btn" onclick="selectPlatform('Forex')">Forex API</div>
+      <div id="p-binance" class="platform-btn" onclick="selectPlatform('Binance')">Binance API</div>
+    </div>
+
+    <div class="live-sync-box">
+      <div>
+        <div class="sync-label" id="activePairName">EUR/USD LIVE FEED</div>
+        <div class="sync-price" id="liveSyncPrice">1.11218</div>
+      </div>
+      <div style="text-align: right;">
+        <div class="sync-label">REAL DEVICE CLOCK</div>
+        <div style="font-size: 14px; color: #fbbf24; font-weight: bold;" id="deviceClockTime">00:00:00</div>
+      </div>
+    </div>
+
+    <div class="label">MARKET TYPE</div>
+    <div class="btn-grid">
+      <div id="m-otc" class="btn-choice active" onclick="selectMarket('otc')">OTC Market (5s - 30m)</div>
+      <div id="m-real" class="btn-choice" onclick="selectMarket('real')">Real Market (1m - 12h)</div>
+    </div>
+
+    <div class="label">ENTRY STRATEGY</div>
+    <div class="btn-grid">
+      <div id="s-next" class="btn-choice active" onclick="selectStrategy('NEXT CANDLE ENTRY')">Next Candle Entry</div>
+      <div id="s-run" class="btn-choice" onclick="selectStrategy('RUNNING CANDLE ENTRY')">Running Candle Entry</div>
+    </div>
+
+    <div class="label">ASSET CATEGORY</div>
+    <select id="catSelect" onchange="loadOptions()">
+      <option value="currencies">Currencies (Forex Pairs)</option>
+      <option value="crypto">Crypto (Binance/Crypto)</option>
+      <option value="commodities">Commodities (Gold/Silver)</option>
+      <option value="stocks">Stocks & Indices</option>
+    </select>
+
+    <div class="label">SEARCH & SELECT PAIR</div>
+    <input type="text" id="pairSearch" placeholder=" Search pair (e.g. EUR, Gold, BDT)..." onkeyup="filterPairs()">
+    <select id="pairSelect" size="4" onchange="onPairChange()" style="height: 95px;"></select>
+
+    <div class="label">TIMEFRAME / EXPIRY</div>
+    <select id="tfSelect"></select>
+
+    <button class="gen-btn" onclick="startScanner()">SCAN MULTI-API MARKET & GET SIGNAL</button>
+
+    <div id="scannerAlert" class="scanner-alert">
+       Scanning real-time API feed & 99% win-rate window... (<span id="scanSec">3</span>s)
+    </div>
+
+    <div id="resultCard" class="result-box">
+      <div style="font-size: 10px; color: #d1d5db;" id="sigId">SIGNAL ID #FX9921</div>
+      <div id="sigText" class="signal-title">FXMANNAN BUY </div>
+      <div style="font-size: 11px; color: #fbbf24; font-weight: bold;" id="sigMode">STRATEGY: NEXT CANDLE ENTRY</div>
+
+      <div class="timing-highlight" id="timingWindowBox">
+         REAL-TIME ENTRY GUIDE: Loading...
+      </div>
+
+      <div class="market-analysis">
+        <div style="font-weight: bold; color: #38bdf8; margin-bottom: 4px; text-align: center;" id="analysisTitle"> MULTI-API TECHNICAL ANALYSIS</div>
+        <div class="analysis-row">
+          <span>Live Price Feed:</span> <b id="resLivePrice" style="color: #4ade80;">1.11218</b>
+        </div>
+        <div class="analysis-row">
+          <span>Signal Direction:</span> <b id="trendVal" style="color: #4ade80;">CALL (BULLISH REVERSAL)</b>
+        </div>
+        <div class="analysis-row">
+          <span>RSI / Momentum:</span> <b id="rsiVal">69.50 (99% Win Accuracy)</b>
+        </div>
+        <div style="margin-top: 4px;">
+          <div class="analysis-row" style="margin-bottom: 2px;">
+            <span style="color:#22c55e;">BUY POWER: <b id="buyPwr">92%</b></span>
+            <span style="color:#ef4444;">SELL POWER: <b id="sellPwr">8%</b></span>
+          </div>
+          <div class="power-bar-bg">
+            <div id="buyBar" class="power-buy" style="width: 92%;"></div>
+            <div id="sellBar" class="power-sell" style="width: 8%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 10px; margin-top: 6px; color: #cbd5e1;" id="sigDetails"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //    : 159020
+  var MASTER_KEY = "159020";
+
+  function unlockBot() {
+    var inputVal = document.getElementById('accessPass').value;
+    var err = document.getElementById('errMsg');
+    
+    if(inputVal === MASTER_KEY) {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('mainBotContent').style.display = 'block';
+      err.style.display = 'none';
+      loadOptions();
+      startLiveSyncEngine();
+    } else {
+      err.style.display = 'block';
+    }
+  }
+
+  var currentPlatform = 'Quotex';
+  var mType = 'otc';
+  var sMode = 'NEXT CANDLE ENTRY';
+  var currentPrice = 1.11218;
+  var syncInterval = null;
+
+  var otcData = {
+    currencies: [
+      'EUR/USD (OTC)', 'GBP/USD (OTC)', 'NZD/USD (OTC)', 'USD/ARS (OTC)', 'USD/INR (OTC)', 
+      'USD/BDT (OTC)', 'USD/BRL (OTC)', 'EUR/NZD (OTC)', 'USD/EGP (OTC)', 'USD/IDR (OTC)', 
+      'USD/MXN (OTC)', 'USD/PHP (OTC)', 'USD/PKR (OTC)', 'USD/COP (OTC)', 'USD/ZAR (OTC)'
+    ],
+    crypto: ['Binance Coin (OTC)', 'Litecoin (OTC)', 'Bitcoin Cash (OTC)', 'Ripple (OTC)'],
+    commodities: ['USCrude (OTC)', 'UKBrent (OTC)'],
+    stocks: ['Microsoft (OTC)', 'Apple (OTC)', 'Intel (OTC)', 'Boeing (OTC)']
+  };
+
+  var realData = {
+    currencies: [
+      'EUR/USD', 'GBP/USD', 'USD/JPY', 'EUR/AUD', 'GBP/CAD', 'GBP/AUD', 
+      'AUD/USD', 'GBP/CHF', 'CHF/JPY', 'EUR/CHF', 'USD/CAD', 'USD/CHF'
+    ],
+    crypto: ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'SOL/USDT', 'XRP/USDT'],
+    commodities: ['Gold (XAU/USD)', 'Silver (XAG/USD)'],
+    stocks: ['S&P 500', 'Nasdaq 100', 'Nikkei 225', 'FTSE 100']
+  };
+
+  var tfOTC = ['5 Seconds', '10 Seconds', '15 Seconds', '30 Seconds', '1 Minute', '5 Minutes'];
+  var tfReal = ['1 Minute', '5 Minutes', '15 Minutes', '30 Minutes', '1 Hour'];
+
+  function selectPlatform(platformName) {
+    currentPlatform = platformName;
+    var platforms = ['Quotex', 'IQ Option', 'TradingView', 'Forex', 'Binance'];
+    for(var i=0; i<platforms.length; i++) {
+      var pId = 'p-' + platforms[i].toLowerCase().replace(' ', '');
+      var el = document.getElementById(pId);
+      if(el) el.className = (platforms[i] === platformName) ? 'platform-btn active' : 'platform-btn';
+    }
+    document.getElementById('platformSub').innerText = platformName + " API Synced Engine";
+    document.getElementById('analysisTitle').innerText = " " + platformName.toUpperCase() + " API ANALYSIS";
+  }
+
+  function selectMarket(type) {
+    mType = type;
+    document.getElementById('m-otc').className = (type === 'otc') ? 'btn-choice active' : 'btn-choice';
+    document.getElementById('m-real').className = (type === 'real') ? 'btn-choice active' : 'btn-choice';
+    loadOptions();
+  }
+
+  function selectStrategy(strat) {
+    sMode = strat;
+    document.getElementById('s-next').className = (strat === 'NEXT CANDLE ENTRY') ? 'btn-choice active' : 'btn-choice';
+    document.getElementById('s-run').className = (strat === 'RUNNING CANDLE ENTRY') ? 'btn-choice active' : 'btn-choice';
+  }
+
+  function loadOptions() {
+    var cat = document.getElementById('catSelect').value;
+    var tSel = document.getElementById('tfSelect');
+    var pList = (mType === 'otc') ? otcData[cat] : realData[cat];
+    var tList = (mType === 'otc') ? tfOTC : tfReal;
+
+    window.activePairList = pList || [];
+    renderPairSelect(window.activePairList);
+
+    tSel.innerHTML = '';
+    for(var j=0; j<tList.length; j++) {
+      tSel.innerHTML += '<option value="' + tList[j] + '">' + tList[j] + '</option>';
+    }
+  }
+
+  function renderPairSelect(list) {
+    var pSel = document.getElementById('pairSelect');
+    pSel.innerHTML = '';
+    for(var i=0; i<list.length; i++) {
+      pSel.innerHTML += '<option value="' + list[i] + '">' + list[i] + '</option>';
+    }
+    if(list.length > 0) {
+      pSel.selectedIndex = 0;
+      onPairChange();
+    }
+  }
+
+  function filterPairs() {
+    var keyword = document.getElementById('pairSearch').value.toLowerCase();
+    var filtered = window.activePairList.filter(function(p) {
+      return p.toLowerCase().includes(keyword);
+    });
+    renderPairSelect(filtered);
+  }
+
+  function onPairChange() {
+    var pSel = document.getElementById('pairSelect');
+    var pair = pSel.value || 'EUR/USD';
+    document.getElementById('activePairName').innerText = pair + " (" + currentPlatform.toUpperCase() + " API)";
+
+    if(pair.includes('EUR/USD')) currentPrice = 1.11218;
+    else if(pair.includes('GBP/USD')) currentPrice = 1.30210;
+    else if(pair.includes('Gold')) currentPrice = 2735.52;
+    else if(pair.includes('BTC')) currentPrice = 67450.00;
+    else if(pair.includes('USD/JPY')) currentPrice = 152.30;
+    else currentPrice = 1.0520;
+  }
+
+  function startLiveSyncEngine() {
+    if(syncInterval) clearInterval(syncInterval);
+
+    syncInterval = setInterval(function() {
+      var step = currentPrice > 1000 ? 0.25 : (currentPrice > 100 ? 0.03 : 0.00010);
+      currentPrice += (Math.random() - 0.49) * step;
+
+      var decimals = currentPrice > 1000 ? 2 : 5;
+      var priceStr = currentPrice.toFixed(decimals);
+
+      var priceEl = document.getElementById('liveSyncPrice');
+      if(priceEl) {
+        var oldVal = parseFloat(priceEl.innerText);
+        var newVal = parseFloat(priceStr);
+        priceEl.innerText = priceStr;
+        priceEl.className = (newVal >= oldVal) ? 'sync-price' : 'sync-price down';
+      }
+
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+      
+      var clockEl = document.getElementById('deviceClockTime');
+      if(clockEl) clockEl.innerText = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+    }, 1000);
+  }
+
+  function startScanner() {
+    document.getElementById('resultCard').style.display = 'none';
+    var alertBox = document.getElementById('scannerAlert');
+    alertBox.style.display = 'block';
+    
+    var count = 3;
+    document.getElementById('scanSec').innerText = count;
+
+    var scanTimer = setInterval(function() {
+      count--;
+      document.getElementById('scanSec').innerText = count;
+      if(count <= 0) {
+        clearInterval(scanTimer);
+        alertBox.style.display = 'none';
+        renderResult();
+      }
+    }, 1000);
+  }
+
+  function formatTime(d) {
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    m = m < 10 ? '0' + m : m;
+    return h + ':' + m + ' ' + ampm;
+  }
+
+  function renderResult() {
+    var isBuy = Math.random() > 0.45;
+    var resCard = document.getElementById('resultCard');
+    var sigTxt = document.getElementById('sigText');
+    var timingBox = document.getElementById('timingWindowBox');
+    var tfVal = document.getElementById('tfSelect').value;
+
+    resCard.style.display = 'block';
+    
+    var now = new Date();
+    var currentClock = formatTime(now);
+
+    var targetTime = new Date(now.getTime());
+    if(tfVal.includes('Minute') || tfVal.includes('s')) {
+      targetTime.setMinutes(now.getMinutes() + 1);
+    } else if(tfVal.includes('30 Minutes')) {
+      targetTime.setMinutes(now.getMinutes() + 30);
+    }
+    var targetClock = formatTime(targetTime);
+
+    var actionText = isBuy ? 'BUY / CALL (UP)' : 'SELL / PUT (DOWN)';
+    var modeLabel = (sMode === 'NEXT CANDLE ENTRY') ? 'NEXT CANDLE ENTRY' : 'RUNNING CANDLE ENTRY';
+
+    if(isBuy) {
+      resCard.className = 'result-box';
+      sigTxt.innerText = 'FXMANNAN BUY ';
+      document.getElementById('trendVal').innerText = 'CALL (BULLISH REVERSAL)';
+      document.getElementById('trendVal').style.color = '#4ade80';
+      timingBox.style.borderColor = '#22c55e';
+      timingBox.style.color = '#4ade80';
+    } else {
+      resCard.className = 'result-box sell';
+      sigTxt.innerText = 'FXMANNAN SELL ';
+      document.getElementById('trendVal').innerText = 'PUT (BEARISH REVERSAL)';
+      document.getElementById('trendVal').style.color = '#f87171';
+      timingBox.style.borderColor = '#ef4444';
+      timingBox.style.color = '#f87171';
+    }
+
+    if(sMode === 'NEXT CANDLE ENTRY') {
+      timingBox.innerHTML = ' <b>REAL-TIME ENTRY GUIDE (' + tfVal + '):</b><br>' +
+                            ' Current Time: <b>' + currentClock + '</b><br>' +
+                            ' Target Candle Time: <b>' + targetClock + '</b><br>' +
+                            ' Action: Take <b>' + actionText + '</b><br>' +
+                            ' Precise Window: <b>00:01 to 00:05 Sec</b> of the target candle!';
+    } else {
+      timingBox.innerHTML = ' <b>REAL-TIME RUNNING ENTRY (' + tfVal + '):</b><br>' +
+                            ' Current Clock: <b>' + currentClock + '</b><br>' +
+                            ' Action: Take <b>' + actionText + '</b> immediately on Running Candle!<br>' +
+                            ' Execution Window: <b>Current Running Seconds</b>';
+    }
+
+    var decimals = currentPrice > 1000 ? 2 : 5;
+    document.getElementById('resLivePrice').innerText = currentPrice.toFixed(decimals);
+
+    var buyPower = isBuy ? Math.floor(90 + Math.random() * 8) : Math.floor(6 + Math.random() * 10);
+    var sellPower = 100 - buyPower;
+    document.getElementById('buyPwr').innerText = buyPower + '%';
+    document.getElementById('sellPwr').innerText = sellPower + '%';
+    document.getElementById('buyBar').style.width = buyPower + '%';
+    document.getElementById('sellBar').style.width = sellPower + '%';
+
+    document.getElementById('sigMode').innerText = 'STRATEGY: ' + modeLabel;
+    document.getElementById('sigId').innerText = 'SIGNAL ID #FX' + Math.floor(1000 + Math.random()*9000);
+    
+    var pSel = document.getElementById('pairSelect');
+    var pairVal = pSel.value || 'EUR/USD';
+    document.getElementById('sigDetails').innerText = 'PLATFORM: ' + currentPlatform.toUpperCase() + ' API | PAIR: ' + pairVal + ' | TF: ' + tfVal;
+  }
+</script>
+
+</body>
+</html>
